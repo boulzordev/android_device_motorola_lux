@@ -128,11 +128,6 @@
     <!-- The restoring is handled by modem if it is true-->
     <bool name="skip_restoring_network_selection">true</bool>
 	
-    <!-- Maximum number of supported users -->
-    <integer name="config_multiuserMaximumUsers">4</integer>
-    <!-- Whether Multiuser UI should be shown -->
-    <bool name="config_enableMultiUserUI">true</bool>	
-	
     <!-- Default screen brightness setting.
          Must be in the range specified by minimum and maximum. -->
     <integer name="config_screenBrightnessSettingDefault">80</integer>
@@ -224,9 +219,6 @@
         <item>7</item>
     </integer-array>
 
-    <!-- If this is true, the screen will come on when you unplug usb/power/whatever. -->
-    <bool name="config_unplugTurnsOnScreen">true</bool>
-
     <!-- If this is true, the screen will fade off. -->
     <bool name="config_animateScreenLights">false</bool>
 
@@ -236,9 +228,6 @@
 	
     <!-- Indicate whether the SD card is accessible without removing the battery. -->
     <bool name="config_batterySdCardAccessibility">true</bool>	
-
-    <!-- Set to true to add links to Cell Broadcast app from Settings and MMS app. -->
-    <bool name="config_cellBroadcastAppLinks">true</bool>
 
     <!-- Boolean indicating if current platform supports BLE peripheral mode -->
     <bool name="config_bluetooth_le_peripheral_mode_supported">true</bool>
@@ -331,10 +320,6 @@
 
     <!-- We dont have different firmware for wifi modes, prevent reloading it -->
     <bool name="config_wifiApFirmwareReload">false</bool>
-
-    <!-- Boolean indicating if restoring network selection should be skipped -->
-    <!-- The restoring is handled by modem if it is true-->
-    <bool name="skip_restoring_network_selection">true</bool>
 
     <!-- Make things go fast -->
     <bool name="config_ui_enableFadingMarquee">false</bool>
