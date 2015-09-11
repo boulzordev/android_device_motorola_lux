@@ -52,6 +52,8 @@ BOARD_RAMDISK_OFFSET := 0x01000000
 TARGET_KERNEL_SOURCE := kernel/motorola/msm8916
 TARGET_KERNEL_CONFIG := msm8916-lux_defconfig
 
+TARGET_KERNEL_CROSS_COMPILE_PREFIX := /home/boulzorbuild/kernel/arm-linux-androideabi-4.9/bin/arm-linux-androideabi-
+
 BOARD_MKBOOTIMG_ARGS := --ramdisk_offset 0x01000000 --tags_offset 0x00000100
 
 # Asserts
