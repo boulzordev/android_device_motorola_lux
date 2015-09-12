@@ -1,1 +1,1 @@
-add_lunch_combo omni_osprey-userdebug
+add_lunch_combo omni_lux-userdebug
