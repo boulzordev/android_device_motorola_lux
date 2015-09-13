@@ -158,10 +158,5 @@ PRODUCT_PROPERTY_OVERRIDES += \
     persist.sys.ssr.restart_level=ALL_ENABLE
 
 PRODUCT_PROPERTY_OVERRIDES += \
-    persist.radio.mcfg_enabled=1 \
-    persist.radio.multi_mbns=nz2deg.mbn;apac_default.mbn \
-    ro.fsg-id=emea_dsds \
-    persist.radio.plmn_name_cmp=1 \
-    persist.radio.process_sups_ind=0 \
     persist.camera.video.hdr=record \
     ro.frp.pst=/dev/block/bootdevice/by-name/frp

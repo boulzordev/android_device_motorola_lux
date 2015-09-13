@@ -104,18 +104,9 @@ persist.sys.ssr.restart_level=ALL_ENABLE
 persist.sys.qc.sub.rdump.on=1
 persist.data.qmi.adb_logmask=0
 persist.sys.qc.sub.rdump.max=3
-persist.radio.mot_ecc_custid=emea
-persist.radio.mot_ecc_enabled=1
-persist.radio.multisim.config=dsds
-persist.radio.force_get_pref=1
-persist.radio.plmn_name_cmp=1
-persist.radio.process_sups_ind=0
-ro.gsm.data_retry_config=default_randomization=2000,max_retries=infinite,1000,1000,80000,125000,485000,905000
 DEVICE_PROVISIONED=1
 persist.radio.mcfg_enabled=1
 persist.radio.multi_mbns=nz2deg.mbn;apac_default.mbn
-ro.fsg-id=emea_dsds
-ro.telephony.default_network=9
 ro.persist.qcapb=0
 ro.pip.gated=0
 

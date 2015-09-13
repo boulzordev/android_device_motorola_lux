@@ -61,16 +61,28 @@ void init_msm_properties(unsigned long msm_id, unsigned long msm_ver, char *boar
     property_set("ro.product.model", "Moto X Play");
     property_set("ro.telephony.default_network", "9");
     if (ISMATCH(sku, "XT1562") || ISMATCH(radio, "0x4")) {
-        /* XT1540 */
+        setMsim();
         property_set("ro.product.name", "lux_retasia_ds");
         property_set("ro.product.device", "lux_uds");
         property_set("ro.build.description", "lux_retasia_ds-user 5.1.1 LPD23.118-10 14 release-keys");
         property_set("ro.build.fingerprint", "motorola/lux_retasia_ds/lux_uds:5.1.1/LPD23.118-10/14:user/release-keys");
         property_set("ro.build.product", "lux_uds");
         property_set("ro.mot.build.customerid", "retasiaall");
-        property_set("ro.boot.fsg-id", "emea_dsds");
-        property_set("ro.fsg-id", "emea_dsds");
         property_set("ro.gsm.data_retry_config", "default_randomization=2000,max_retries=infinite,1000,1000,80000,125000,485000,905000");
+        property_set("persist.radio.mot_ecc_custid", "emea");
+        property_set("persist.radio.mot_ecc_enabled", "1");
+        property_set("persist.radio.process_sups_ind", "0");
+        property_set("persist.radio.plmn_name_cmp", "1");
+    }
+    else if (ISMATCH(sku, "XT1563") || ISMATCH(radio, "0x8")) {
+        property_set("ro.product.name", "lux_retca");
+        property_set("ro.product.device", "lux");
+        property_set("ro.build.description", "lux_retca-user 5.1.1 LPD23.118-10 19 release-keys");
+        property_set("ro.build.fingerprint", "motorola/lux_retca/lux:5.1.1/LPD23.118-10/19:user/release-keys");
+        property_set("ro.build.product", "lux");
+        property_set("ro.mot.build.customerid", "retca");
+        property_set("ro.gsm.data_retry_config", "");
+        property_set("persist.radio.process_sups_ind", "1");
     }
 
     property_get("ro.product.device", device);
