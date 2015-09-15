@@ -35,6 +35,7 @@ PRODUCT_COPY_FILES += \
     frameworks/native/data/etc/android.hardware.sensor.light.xml:system/etc/permissions/android.hardware.sensor.light.xml \
     frameworks/native/data/etc/android.hardware.touchscreen.multitouch.jazzhand.xml:system/etc/permissions/android.hardware.touchscreen.multitouch.jazzhand.xml \
     frameworks/native/data/etc/android.hardware.nfc.xml:system/etc/permissions/android.hardware.nfc.xml \
+    frameworks/native/data/etc/android.hardware.nfc.hce.xml:system/etc/permissions/android.hardware.nfc.hce.xml \
     frameworks/base/nfc-extras/com.android.nfc_extras.xml:system/etc/permissions/com.android.nfc_extras.xml \
     frameworks/native/data/etc/android.software.sip.voip.xml:system/etc/permissions/android.software.sip.voip.xml \
     frameworks/native/data/etc/android.hardware.usb.accessory.xml:system/etc/permissions/android.hardware.usb.accessory.xml \
@@ -121,7 +122,12 @@ PRODUCT_PACKAGES += \
 
 # GPS
 PRODUCT_PACKAGES += \
-    gps.msm8916
+    gps.default \
+    gps.msm8916 \
+    libloc_adapter \
+    libgps.utils \
+    libloc_eng \
+    libloc_api_v02
 
 # IRSC
 PRODUCT_COPY_FILES += \
@@ -152,6 +158,8 @@ PRODUCT_COPY_FILES += \
 
 # NFC
 PRODUCT_PACKAGES += \
+    libnfc \
+    libnfc_jni \
     nfc_nci.bcm2079x.msm8916 \
     libnfc_ndef \
     libnfc-nci \
@@ -183,6 +191,7 @@ PRODUCT_BOOT_JARS += \
 
 # Power
 PRODUCT_PACKAGES += \
+    power.qcom \
     power.msm8916
 
 # Ramdisk
@@ -219,10 +228,7 @@ PRODUCT_PACKAGES += \
     init.qcom.class_core.sh \
     init.class_main.sh \
     init.qcom.early_boot.sh \
-    ueventd.qcom.rc \
-    qee.dat \
-    qe \
-    qem.dat
+    ueventd.qcom.rc
 
 # Thermal
 PRODUCT_COPY_FILES += \

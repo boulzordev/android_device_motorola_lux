@@ -44,14 +44,9 @@ TARGET_CPU_VARIANT := cortex-a53
 # CPU
 TARGET_CPU_CORTEX_A53 := true
 
-# Flags
-TARGET_GLOBAL_CFLAGS += -mfpu=neon -mfloat-abi=softfp
-TARGET_GLOBAL_CPPFLAGS += -mfpu=neon -mfloat-abi=softfp
-COMMON_GLOBAL_CFLAGS += -DREFRESH_RATE=60
-
 # Kernel
 BOARD_CUSTOM_BOOTIMG_MK := device/motorola/lux/mkbootimg.mk
-BOARD_KERNEL_CMDLINE := console=ttyHSL0,115200,n8 androidboot.console=ttyHSL0 androidboot.hardware=qcom msm_rtb.filter=0x3F ehci-hcd.park=3 vmalloc=400M androidboot.bootdevice=7824900.sdhci utags.blkdev=/dev/block/bootdevice/by-name/utags utags.backup=/dev/block/bootdevice/by-name/utagsBackup movablecore=160M androidboot.selinux=permissive
+BOARD_KERNEL_CMDLINE := console=ttyHSL0,115200,n8 androidboot.console=ttyHSL0 androidboot.hardware=qcom msm_rtb.filter=0x3F ehci-hcd.park=3 vmalloc=400M androidboot.bootdevice=soc.0 utags.blkdev=/dev/block/platform/soc.0/by-name/utags utags.backup=/dev/block/platform/soc.0/by-name/utagsBackup movablecore=160M androidboot.selinux=permissive
 BOARD_KERNEL_BASE := 0x80000000
 BOARD_KERNEL_PAGESIZE := 2048
 BOARD_KERNEL_SEPARATED_DT := true
@@ -60,10 +55,17 @@ BOARD_RAMDISK_OFFSET := 0x01000000
 TARGET_KERNEL_SOURCE := kernel/motorola/msm8916
 TARGET_KERNEL_CONFIG := msm8916-lux_defconfig
 
+# Use external Linaro 4.9.3 compiler instead of default GCC 4.8
+# The default GCC throws false positive warnings on my Prima drivers, preventing compilation
+KERNEL_TOOLCHAIN_PREFIX := arm-linux-gnueabihf-
+
 BOARD_MKBOOTIMG_ARGS := --ramdisk_offset 0x01000000 --tags_offset 0x00000100
 
+# ANT+
+BOARD_ANT_WIRELESS_DEVICE := "vfs-prerelease"
+
 # Asserts
-TARGET_OTA_ASSERT_DEVICE := lux
+TARGET_OTA_ASSERT_DEVICE := lux,xt1563,xt1562
 
 # Audio
 AUDIO_FEATURE_ENABLED_KPI_OPTIMIZE := true
@@ -104,6 +106,7 @@ AUDIO_FEATURE_ENABLED_FM := true
 EXTENDED_FONT_FOOTPRINT := true
 
 # GPS
+TARGET_NO_RPC := true
 TARGET_GPS_HAL_PATH := $(LOCAL_PATH)/gps
 TARGET_PROVIDES_GPS_LOC_API := true
 
@@ -115,6 +118,9 @@ TARGET_LIBINIT_DEFINES_FILE := $(LOCAL_PATH)/init/init_lux.c
 # Lights
 TARGET_PROVIDES_LIBLIGHT := true
 
+# Malloc
+MALLOC_IMPL := dlmalloc
+
 # Motorola
 TARGET_USES_MOTOROLA_LOG := true
 
@@ -122,6 +128,7 @@ TARGET_USES_MOTOROLA_LOG := true
 BOARD_NFC_HAL_SUFFIX := 8916
 
 # QCRIL
+PROTOBUF_SUPPORTED := true
 TARGET_RIL_VARIANT := caf
 
 # Partitions
@@ -137,6 +144,7 @@ TARGET_POWERHAL_VARIANT := qcom
 
 # Qualcomm support
 BOARD_USES_QCOM_HARDWARE := true
+TARGET_USES_QCOM_BSP := true
 
 # Quickboot
 PRODUCT_COPY_FILES += \
