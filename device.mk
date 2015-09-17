@@ -34,7 +34,8 @@ PRODUCT_COPY_FILES += \
     frameworks/native/data/etc/android.hardware.sensor.proximity.xml:system/etc/permissions/android.hardware.sensor.proximity.xml \
     frameworks/native/data/etc/android.hardware.sensor.light.xml:system/etc/permissions/android.hardware.sensor.light.xml \
     frameworks/native/data/etc/android.hardware.touchscreen.multitouch.jazzhand.xml:system/etc/permissions/android.hardware.touchscreen.multitouch.jazzhand.xml \
-	frameworks/native/data/etc/android.hardware.nfc.xml:system/etc/permissions/android.hardware.nfc.xml \
+    frameworks/native/data/etc/android.hardware.nfc.xml:system/etc/permissions/android.hardware.nfc.xml \
+    frameworks/native/data/etc/android.hardware.nfc.hce.xml:system/etc/permissions/android.hardware.nfc.hce.xml \
     frameworks/base/nfc-extras/com.android.nfc_extras.xml:system/etc/permissions/com.android.nfc_extras.xml \
     frameworks/native/data/etc/android.software.sip.voip.xml:system/etc/permissions/android.software.sip.voip.xml \
     frameworks/native/data/etc/android.hardware.usb.accessory.xml:system/etc/permissions/android.hardware.usb.accessory.xml \
@@ -44,9 +45,6 @@ PRODUCT_COPY_FILES += \
     frameworks/native/data/etc/android.hardware.audio.low_latency.xml:system/etc/permissions/android.hardware.audio.low_latency.xml \
     frameworks/native/data/etc/android.software.print.xml:system/etc/permissions/android.software.print.xml \
     frameworks/native/data/etc/android.hardware.ethernet.xml:system/etc/permissions/android.hardware.ethernet.xml
-
-# System Properties
--include $(LOCAL_PATH)/system_prop.mk
 
 PRODUCT_DEFAULT_PROPERTY_OVERRIDES += \
     persist.sys.usb.config=mtp
@@ -80,7 +78,7 @@ PRODUCT_COPY_FILES +=  \
     $(LOCAL_PATH)/audio/audio_platform_info.xml:system/etc/audio_platform_info.xml \
     $(LOCAL_PATH)/audio/audio_policy.conf:system/etc/audio_policy.conf \
     $(LOCAL_PATH)/audio/mixer_paths.xml:system/etc/mixer_paths.xml \
-	$(LOCAL_PATH)/audio/mixer_paths_florida.xml:system/etc/mixer_paths_florida.xml
+    $(LOCAL_PATH)/audio/mixer_paths_florida.xml:system/etc/mixer_paths_florida.xml
 
 # Camera
 PRODUCT_PACKAGES += \
@@ -124,7 +122,12 @@ PRODUCT_PACKAGES += \
 
 # GPS
 PRODUCT_PACKAGES += \
-    gps.msm8916
+    gps.default \
+    gps.msm8916 \
+    libloc_adapter \
+    libgps.utils \
+    libloc_eng \
+    libloc_api_v02
 
 # IRSC
 PRODUCT_COPY_FILES += \
@@ -144,24 +147,26 @@ PRODUCT_COPY_FILES += \
     frameworks/av/media/libstagefright/data/media_codecs_google_telephony.xml:system/etc/media_codecs_google_telephony.xml \
     frameworks/av/media/libstagefright/data/media_codecs_google_video.xml:system/etc/media_codecs_google_video.xml \
     $(LOCAL_PATH)/configs/media_codecs.xml:system/etc/media_codecs.xml \
-	$(LOCAL_PATH)/configs/media_codecs_8929.xml:system/etc/media_codecs_8929.xml \
-	$(LOCAL_PATH)/configs/media_codecs_8939.xml:system/etc/media_codecs_8939.xml \
+    $(LOCAL_PATH)/configs/media_codecs_8929.xml:system/etc/media_codecs_8929.xml \
+    $(LOCAL_PATH)/configs/media_codecs_8939.xml:system/etc/media_codecs_8939.xml \
     $(LOCAL_PATH)/configs/media_profiles.xml:system/etc/media_profiles.xml
-	
+
 NFCEE_ACCESS_PATH := $(LOCAL_PATH)/configs/nfcee_access.xml
 
 PRODUCT_COPY_FILES += \
-    $(NFCEE_ACCESS_PATH):system/etc/nfcee_access.xml	
-	
+    $(NFCEE_ACCESS_PATH):system/etc/nfcee_access.xml
+
 # NFC
 PRODUCT_PACKAGES += \
-    nfc.msm8916 \
     libnfc \
-    libnfc_ndef \
     libnfc_jni \
-    Nfc \
+    nfc_nci.bcm2079x.msm8916 \
+    libnfc_ndef \
+    libnfc-nci \
+    libnfc_nci_jni \
+    NfcNci \
     Tag \
-    com.android.nfc_extras	
+    com.android.nfc_extras
 
 # Misc
 PRODUCT_PACKAGES += \
@@ -186,6 +191,7 @@ PRODUCT_BOOT_JARS += \
 
 # Power
 PRODUCT_PACKAGES += \
+    power.qcom \
     power.msm8916
 
 # Ramdisk
@@ -193,39 +199,36 @@ PRODUCT_PACKAGES += \
     init.qcom.bt.sh \
     init.qcom.ril.sh \
     stml0xx_wrapper.sh \
-	hsic.control.bt.sh \
-	init.ath3k.bt.sh \
-	init.crda.sh \
-	init.qcom.audio.sh \
-	init.qcom.coex.sh \
-	init.qcom.fm.sh \
-	init.qcom.modem_links.sh \
-	init.qcom.post_boot.sh \
-	init.qcom.sdio.sh \
-	init.qcom.wifi.sh
+    hsic.control.bt.sh \
+    init.ath3k.bt.sh \
+    init.crda.sh \
+    init.qcom.audio.sh \
+    init.qcom.coex.sh \
+    init.qcom.fm.sh \
+    init.qcom.modem_links.sh \
+    init.qcom.post_boot.sh \
+    init.qcom.sdio.sh \
+    init.qcom.wifi.sh
 
 PRODUCT_PACKAGES += \
     fstab.qcom \
-	init.mmi.block_perm.sh \
+    init.mmi.block_perm.sh \
     init.mmi.boot.sh \
     init.mmi.dtv.sh \
     init.mmi.early_boot.sh \
-	init.mmi.overlay.rc \
+    init.mmi.overlay.rc \
     init.mmi.touch.sh \
-	init.mmi.rc \
+    init.mmi.rc \
     init.mmi.usb.rc \
     init.mmi.usb.sh \
-	init.qcom.bms.sh \
+    init.qcom.bms.sh \
     init.qcom.rc \
-	init.qcom.sh \
-	init.target.rc \
-	init.qcom.class_core.sh \
-	init.class_main.sh \
-	init.qcom.early_boot.sh \
-    ueventd.qcom.rc \
-	qee.dat \
-	qe \
-	qem.dat
+    init.qcom.sh \
+    init.target.rc \
+    init.qcom.class_core.sh \
+    init.class_main.sh \
+    init.qcom.early_boot.sh \
+    ueventd.qcom.rc
 
 # Thermal
 PRODUCT_COPY_FILES += \
@@ -256,14 +259,26 @@ PRODUCT_PACKAGES += \
     libQWiFiSoftApCfg \
     tcpdump \
     wcnss_service
-	
+
 PRODUCT_PROPERTY_OVERRIDES += \
-    ro.sf.lcd_density=480	
-	
+    ro.sf.lcd_density=480
+
 # IRQ balance
 PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/configs/msm_irqbalance.conf:system/vendor/etc/msm_irqbalance.conf	
+    $(LOCAL_PATH)/configs/msm_irqbalance.conf:system/vendor/etc/msm_irqbalance.conf
 
 PRODUCT_COPY_FILES += \
     kernel/motorola/msm8916/drivers/staging/prima/firmware_bin/WCNSS_cfg.dat:system/etc/firmware/wlan/prima/WCNSS_cfg.dat \
     kernel/motorola/msm8916/drivers/staging/prima/firmware_bin/WCNSS_qcom_cfg.ini:system/etc/firmware/wlan/prima/WCNSS_qcom_cfg.ini
+
+PRODUCT_COPY_FILES += \
+    device/motorola/lux/configs/libnfc-brcm.conf:system/etc/libnfc-brcm.conf \
+    device/motorola/lux/configs/libnfc-brcm-20795a20.conf:system/etc/libnfc-brcm-20795a20.conf
+
+# Input configuration
+PRODUCT_COPY_FILES += \
+    $(LOCAL_PATH)/configs/keylayout/ft5x06_ts.kl:system/usr/keylayout/ft5x06_ts.kl \
+    $(LOCAL_PATH)/configs/keylayout/gpio-keys.kl:system/usr/keylayout/gpio-keys.kl \
+    $(LOCAL_PATH)/configs/keylayout/msm8939-florida-snd-card_Button_Jack.kl:system/usr/keylayout/msm8939-florida-snd-card_Button_Jack.kl \
+    $(LOCAL_PATH)/configs/keylayout/synaptics_dsx.kl:system/usr/keylayout/synaptics_dsx.kl \
+    $(LOCAL_PATH)/configs/keylayout/synaptics_rmi4_i2c.kl:system/usr/keylayout/synaptics_rmi4_i2c.kl \

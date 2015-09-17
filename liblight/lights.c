@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014 The CyanogenMod Project
+ * Copyright (C) 2014-2015 The CyanogenMod Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,18 +36,19 @@
 
 static pthread_once_t g_init = PTHREAD_ONCE_INIT;
 static pthread_mutex_t g_lock = PTHREAD_MUTEX_INITIALIZER;
+static struct light_state_t g_notification;
 static struct light_state_t g_battery;
 static int g_attention = 0;
 
 char const*const WHITE_LED_FILE
-        = "/sys/class/leds/charging/brightness";
+        = "/sys/class/leds/rgb/brightness";
 
 char const*const LCD_FILE
         = "/sys/class/leds/lcd-backlight/brightness";
 
-char const *const WHITE_LED_TRIGGER = "/sys/class/leds/charging/trigger";
-char const *const WHITE_LED_DELAY_ON = "/sys/class/leds/charging/delay_on"; 
-char const *const WHITE_LED_DELAY_OFF = "/sys/class/leds/charging/delay_off";
+char const*const RGB_CONTROL_FILE
+        = "/sys/class/leds/rgb/control";
+
 /**
  * device methods
  */
@@ -138,6 +139,7 @@ set_speaker_light_locked(struct light_device_t* dev,
     unsigned int colorRGB;
     char blink_pattern[PAGE_SIZE];
 
+
     switch (state->flashMode) {
         case LIGHT_FLASH_TIMED:
             onMS = state->flashOnMS;
@@ -156,7 +158,6 @@ set_speaker_light_locked(struct light_device_t* dev,
             state->flashMode, colorRGB, onMS, offMS);
 #endif
 
-
     if (onMS > 0 && offMS > 0) {
 
         blink = 1;
@@ -170,30 +171,32 @@ set_speaker_light_locked(struct light_device_t* dev,
     int brightness = ((77 * ((colorRGB >> 16) & 0xFF)) +
                       (150 * ((colorRGB >> 8) & 0xFF)) +
                       (29 * (colorRGB & 0xFF))) >> 8;
-    write_int(WHITE_LED_FILE, (int) brightness);
 
-    if (blink) {
-    	write_str(WHITE_LED_TRIGGER, "notification");
-	sprintf(blink_pattern, "%d", onMS);
-	write_str(WHITE_LED_DELAY_ON, blink_pattern);
-	sprintf(blink_pattern, "%d", offMS);
-	write_str(WHITE_LED_DELAY_OFF, blink_pattern);
-    }else{
-    	write_str(WHITE_LED_TRIGGER, "none");
-    }
+    sprintf(blink_pattern,"%6x %d %d %d %d",colorRGB,onMS,offMS,ramp,ramp);
+    write_str(RGB_CONTROL_FILE, blink_pattern);
 
-    return brightness;
+    return 0;
 }
 
 static void
 handle_speaker_battery_locked(struct light_device_t* dev)
 {
-    int res = set_speaker_light_locked(dev, &g_battery);
-    if (res){
-        ALOGD("battery on\n");
-    }else{
-        ALOGD("no notification\n");
+    if (is_lit(&g_battery)) {
+        set_speaker_light_locked(dev, &g_battery);
+    } else {
+        set_speaker_light_locked(dev, &g_notification);
     }
+}
+
+static int
+set_light_notifications(struct light_device_t* dev,
+        struct light_state_t const* state)
+{
+    pthread_mutex_lock(&g_lock);
+    g_notification = *state;
+    handle_speaker_battery_locked(dev);
+    pthread_mutex_unlock(&g_lock);
+    return 0;
 }
 
 static int
@@ -210,19 +213,6 @@ set_light_attention(struct light_device_t* dev,
     pthread_mutex_unlock(&g_lock);
     return 0;
 }
-
-static int
-set_light_battery(struct light_device_t* dev,
-        struct light_state_t const* state)
-{
-    pthread_mutex_lock(&g_lock);
-    g_battery = *state;
-    ALOGD("batterie led\n");
-    handle_speaker_battery_locked(dev);
-    pthread_mutex_unlock(&g_lock);
-    return 0;
-}
-
 
 
 /** Close the lights device */
@@ -251,8 +241,8 @@ static int open_lights(const struct hw_module_t* module, char const* name,
 
     if (0 == strcmp(LIGHT_ID_BACKLIGHT, name))
         set_light = set_light_backlight;
-    else if (0 == strcmp(LIGHT_ID_BATTERY, name))
-        set_light = set_light_battery;
+    else if (0 == strcmp(LIGHT_ID_NOTIFICATIONS, name))
+        set_light = set_light_notifications;
     else if (0 == strcmp(LIGHT_ID_ATTENTION, name))
         set_light = set_light_attention;
     else
@@ -279,7 +269,6 @@ static struct hw_module_methods_t lights_module_methods = {
 
 /*
  * The lights Module
- * Based on dhacker29 module
  */
 struct hw_module_t HAL_MODULE_INFO_SYM = {
     .tag = HARDWARE_MODULE_TAG,
@@ -287,6 +276,6 @@ struct hw_module_t HAL_MODULE_INFO_SYM = {
     .version_minor = 0,
     .id = LIGHTS_HARDWARE_MODULE_ID,
     .name = "MSM8916 lights Module",
-    .author = "Google, Inc., scritch007",
+    .author = "Google, Inc., dhacker29",
     .methods = &lights_module_methods,
 };

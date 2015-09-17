@@ -9,7 +9,6 @@
 
 # CMHW
 /sys/devices/virtual/graphics/fb0/hbm                       u:object_r:display_sysfs:s0
-/sys/devices/virtual/graphics/fb0/rgb                       u:object_r:display_sysfs:s0
 /sys/devices/virtual/timed_output/vibrator/vtg_level        u:object_r:vibeamp_sysfs:s0
 
 # Motorola services
@@ -25,6 +24,9 @@
 /dev/block/bootdevice/by-name/userdata                      u:object_r:userdata_block_device:s0
 /dev/block/bootdevice/by-name/utags                         u:object_r:utags_block_device:s0
 /dev/block/bootdevice/by-name/utagsBackup                   u:object_r:utags_block_device:s0
+
+# NFC
+/dev/bcm2079x-i2c                                           u:object_r:nfc_device:s0
 
 # PDS
 /pds(/.*)?                                                  u:object_r:pds_file:s0

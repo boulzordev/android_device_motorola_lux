@@ -5,10 +5,13 @@ ro.sys.fw.bservice_limit=5
 ro.sys.fw.bservice_age=5000
 
 # Audio
+ro.qc.sdk.audio.ssr=false
 ro.qc.sdk.audio.fluencetype=fluence
 persist.audio.fluence.voicecall=true
 persist.audio.fluence.voicerec=false
-persist.audio.fluence.speaker=false
+persist.audio.fluence.speaker=true
+persist.audio.fluence.mode=endfire
+use.voice.path.for.pcm.voip=true
 tunnel.audio.encode=false
 av.offload.enable=true
 av.streaming.offload.enable=true
@@ -19,6 +22,22 @@ audio.offload.pcm.16bit.enable=false
 audio.offload.pcm.24bit.enable=true
 use.voice.path.for.pcm.voip=true
 vidc.enc.narrow.searchrange=1
+audio.offload.pcm.16bit.enable=false
+audio.offload.pcm.24bit.enable=true
+audio.offload.disable=0
+audio.offload.gapless.enabled=true
+ro.fm.transmitter=false
+voice.playback.conc.disabled=true
+voice.record.conc.disabled=true
+voice.voip.conc.disabled=true
+audio.dolby.ds2.enabled=true
+persist.audio.calfile0=/etc/acdbdata/Bluetooth_cal.acdb
+persist.audio.calfile1=/etc/acdbdata/General_cal.acdb
+persist.audio.calfile2=/etc/acdbdata/Global_cal.acdb
+persist.audio.calfile3=/etc/acdbdata/Handset_cal.acdb
+persist.audio.calfile4=/etc/acdbdata/Hdmi_cal.acdb
+persist.audio.calfile5=/etc/acdbdata/Headset_cal.acdb
+persist.audio.calfile6=/etc/acdbdata/Speaker_cal.acdb
 
 # Bluetooth
 ro.qualcomm.bt.hci_transport=smd
@@ -27,8 +46,13 @@ ro.bluetooth.hfp.ver=1.6
 qcom.bt.le_dev_pwr_class=1
 bluetooth.hfp.client=1
 
+# Camera
+camera2.portability.force_api=1
+persist.camera.video.hdr=record
+
 # Dexopt - limit to 4 cores
 ro.sys.fw.dex2oat_thread_count=4
+dalvik.vm.dex2oat-flags=--no-watch-dog
 
 # Display
 debug.sf.hw=1
@@ -38,6 +62,8 @@ debug.mdpcomp.logs=0
 dev.pm.dyn_samplingrate=1
 persist.demo.hdmirotationlock=false
 debug.enable.sglscale=1
+ro.opengles.version=196608
+ro.sf.lcd_density=480
 
 #FRP
 ro.frp.pst=/dev/block/bootdevice/by-name/frp
@@ -45,9 +71,12 @@ ro.frp.pst=/dev/block/bootdevice/by-name/frp
 # GPS
 persist.gps.qc_nlp_in_use=0
 ro.gps.agps_provider=1
-ro.qc.sdk.izat.premium.enabled=0
-ro.qc.sdk.izat.service_mask=0x0
 persist.mot.gps.conf.from.sim=true
+ro.gps.agps_provider=1
+ro.qc.sdk.izat.premium_enabled=1
+ro.qc.sdk.izat.service_mask=0x5
+persist.loc.nlp_name=com.qualcomm.services.location
+persist.mot.gps.smart_battery=1
 
 #HWUI
 ro.hwui.texture_cache_size=72
@@ -67,21 +96,15 @@ mm.enable.qcom_parser=3179041
 mm.enable.smoothstreaming=true
 mm.disable.sec_smoothstreaming=true
 media.aac_51_output_enabled=true
+vidc.enc.narrow.searchrange=1
 drm.service.enabled=1
 
-#system props for the MM modules
-media.stagefright.enable-player=true
-media.stagefright.enable-http=true
-media.stagefright.enable-aac=true
-media.stagefright.enable-qcp=true
-media.stagefright.enable-fma2dp=true
-media.stagefright.enable-scan=true
-media.msm8939hw=0
-media.msm8929hw=0
-mmp.enable.3g2=true
-media.aac_51_output_enabled=true
-#codecs: DivX DivXHD AVI AC3 ASF AAC QCP DTS 3G2 MP2TS FLAC
-mm.enable.qcom_parser=3314291
+# Netmgr
+ro.use_data_netmgrd=true
+persist.data.netmgrd.qos.enable=true
+
+#NFC
+nfc.bcm2079x.isSecure=1
 
 # NITZ
 persist.rild.nitz_plmn=
@@ -97,14 +120,15 @@ persist.radio.rat_on=combine
 ril.subscription.types=NV,RUIM
 
 # OTG
-persist.sys.isUsbOtgEnabled=1
+persist.sys.isUsbOtgEnabled=true
 
-# perf
-ro.cpu0.cpu_max_freq=10485760
-ro.cpu4.cpu_max_freq=10485760
-ro.vendor.extension_library=libqti-perfd-client.so
+# Qualcomm
+com.qc.hardware=true
+debug.qc.hardware=true
+persist.timed.enable=true
 
 # Radio
+persist.radio.apn_delay=5000
 persist.radio.apm_sim_not_pwdn=1
 rild.libargs=-d /dev/smd0
 rild.libpath=/system/vendor/lib/libril-qc-qmi-1.so
@@ -116,21 +140,16 @@ persist.radio.dfr_mode_set=1
 persist.qcril_uim_vcc_feature=1
 persist.radio.msgtunnel.start=true
 persist.radio.oem_ind_to_both=false
+persist.radio.relay_oprt_change=1
 persist.sys.ssr.restart_level=ALL_ENABLE
 persist.sys.qc.sub.rdump.on=1
 persist.data.qmi.adb_logmask=0
 persist.sys.qc.sub.rdump.max=3
-persist.radio.mot_ecc_custid=emea
-persist.radio.mot_ecc_enabled=1
-persist.radio.multisim.config=dsds
-persist.radio.force_get_pref=1
-persist.radio.plmn_name_cmp=1
-persist.radio.process_sups_ind=0
-ro.gsm.data_retry_config=default_randomization=2000,max_retries=infinite,1000,1000,80000,125000,485000,905000
 DEVICE_PROVISIONED=1
 persist.radio.mcfg_enabled=1
 persist.radio.multi_mbns=nz2deg.mbn;apac_default.mbn
-ro.fsg-id=emea_dsds
+ro.persist.qcapb=0
+ro.pip.gated=0
 
 # Time
 persist.timed.enable=true
@@ -151,5 +170,7 @@ ro.usb.bpt=2ec1
 ro.usb.bpt_adb=2ec5
 ro.usb.bpteth=2ec3
 ro.usb.bpteth_adb=2ec6
-persist.fuse_sdcard=false
-persist.esdfs_sdcard=true
+
+# WiFi
+persist.sys.qc.sub.rdump.on=1
+persist.sys.ssr.restart_level=ALL_ENABLE

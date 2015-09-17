@@ -64,7 +64,7 @@
 /dev/wwan_ioctl           0660   net_admin  net_admin
 /dev/ipaNatTable          0660   net_admin  net_admin
 
-/dev/block/platform/soc.0/by-name/frp 0600 system system
+/dev/block/bootdevice/by-name/frp 0600 system system
 
 #permissions for CSVT
 /dev/smd11                0660   radio      radio
@@ -224,6 +224,7 @@
 #nfc permissions
 /dev/nfc-nci              0660    nfc         nfc
 /dev/assd                 0660    nfc         nfc
+/dev/bcm2079x-i2c         0660    nfc         nfc
 
 # UIO devices
 /dev/uio0                 0660   system     system
@@ -238,6 +239,9 @@
 
 # Ramdump devices
 /dev/ramdump*             0640   system     system
+
+# Add device block for FRP
+/dev/block/bootdevice/by-name/config    0660   system     system
 
 # Moto Sensors
 /dev/stml0xx               0660  system     compass
@@ -259,3 +263,6 @@
 
 # Subsystem Restart Ramdump
 /dev/ramdump*             0660   radio      radio
+
+# haptic
+/dev/drv2605              0660   system     system

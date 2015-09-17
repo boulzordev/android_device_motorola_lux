@@ -197,8 +197,6 @@ etc/quipc.conf
 etc/sap.conf
 etc/xtwifi.conf
 etc/xtra_root_cert.pem
-lib/libloc_api_v02.so
-lib/libloc_ds_api.so
 vendor/bin/slim_ap_daemon
 vendor/lib/hw/flp.default.so
 vendor/lib/libalarmservice_jni.so
@@ -478,7 +476,6 @@ vendor/lib/libTimeService.so
 vendor/lib/libchromatix_ov5670_q5v41b_common.so
 vendor/lib/libmmcamera_imx132.so
 vendor/lib/libchromatix_ov2680_preview.so
-vendor/lib/libqti-perfd-client.so
 vendor/lib/libaudcal.so
 vendor/lib/libqmi_client_helper.so
 vendor/lib/libril-qcril-hook-oem.so
@@ -843,10 +840,6 @@ vendor/lib/libmmcamera_imglib.so
 vendor/lib/libqmi_client_helper.so
 
 bin/rmnetcli
-bin/perfd
-
-lib/libloc_core.so
-lib/libloc_eng.so
 
 lib/librmnetctl.so
 
