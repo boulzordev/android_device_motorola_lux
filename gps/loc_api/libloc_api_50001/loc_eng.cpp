@@ -206,7 +206,7 @@ static void loc_eng_handle_engine_up(loc_eng_data_s_type &loc_eng_data) ;
 static int loc_eng_start_handler(loc_eng_data_s_type &loc_eng_data);
 static int loc_eng_stop_handler(loc_eng_data_s_type &loc_eng_data);
 static int loc_eng_get_zpp_handler(loc_eng_data_s_type &loc_eng_data);
-
+static void loc_eng_handle_shutdown(loc_eng_data_s_type &loc_eng_data);
 static void deleteAidingData(loc_eng_data_s_type &logEng);
 static AgpsStateMachine*
 getAgpsStateMachine(loc_eng_data_s_type& logEng, AGpsExtType agpsType);
@@ -344,6 +344,27 @@ inline void LocEngGetZpp::log() const
 }
 void LocEngGetZpp::send() const {
     mAdapter->sendMsg(this);
+}
+
+
+LocEngShutdown::LocEngShutdown(LocEngAdapter* adapter) :
+    LocMsg(), mAdapter(adapter)
+{
+    locallog();
+}
+inline void LocEngShutdown::proc() const
+{
+    loc_eng_data_s_type* locEng = (loc_eng_data_s_type*)mAdapter->getOwner();
+    LOC_LOGD("%s:%d]: Calling loc_eng_handle_shutdown", __func__, __LINE__);
+    loc_eng_handle_shutdown(*locEng);
+}
+inline void LocEngShutdown::locallog() const
+{
+    LOC_LOGV("LocEngShutdown");
+}
+inline void LocEngShutdown::log() const
+{
+    locallog();
 }
 
 //        case LOC_ENG_MSG_SET_TIME:
@@ -818,16 +839,7 @@ void LocEngReportPosition::proc() const {
     }
 }
 void LocEngReportPosition::locallog() const {
-    LOC_LOGV("flags: %d\n  source: %d\n  latitude: %f\n  longitude: %f\n  "
-             "altitude: %f\n  speed: %f\n  bearing: %f\n  accuracy: %f\n  "
-             "timestamp: %lld\n  rawDataSize: %d\n  rawData: %p\n  Session"
-             " status: %d\n Technology mask: %u",
-             mLocation.gpsLocation.flags, mLocation.position_source,
-             mLocation.gpsLocation.latitude, mLocation.gpsLocation.longitude,
-             mLocation.gpsLocation.altitude, mLocation.gpsLocation.speed,
-             mLocation.gpsLocation.bearing, mLocation.gpsLocation.accuracy,
-             mLocation.gpsLocation.timestamp, mLocation.rawDataSize,
-             mLocation.rawData, mStatus, mTechMask);
+    LOC_LOGV("LocEngReportPosition");
 }
 void LocEngReportPosition::log() const {
     locallog();
@@ -868,19 +880,7 @@ void LocEngReportSv::proc() const {
     }
 }
 void LocEngReportSv::locallog() const {
-    LOC_LOGV("num sv: %d\n  ephemeris mask: %dxn  almanac mask: %x\n  "
-             "used in fix mask: %x\n      sv: prn         snr       "
-             "elevation      azimuth",
-             mSvStatus.num_svs, mSvStatus.ephemeris_mask,
-             mSvStatus.almanac_mask, mSvStatus.used_in_fix_mask);
-    for (int i = 0; i < mSvStatus.num_svs && i < GPS_MAX_SVS; i++) {
-        LOC_LOGV("   %d:   %d    %f    %f    %f\n  ",
-                 i,
-                 mSvStatus.sv_list[i].prn,
-                 mSvStatus.sv_list[i].snr,
-                 mSvStatus.sv_list[i].elevation,
-                 mSvStatus.sv_list[i].azimuth);
-    }
+    LOC_LOGV("%s:%d] LocEngReportSv",__func__, __LINE__);
 }
 inline void LocEngReportSv::log() const {
     locallog();
@@ -1657,7 +1657,7 @@ int loc_eng_init(loc_eng_data_s_type &loc_eng_data, LocCallbacks* callbacks,
     loc_eng_data.sv_ext_parser = callbacks->sv_ext_parser ?
         callbacks->sv_ext_parser : noProc;
     loc_eng_data.intermediateFix = gps_conf.INTERMEDIATE_POS;
-
+    loc_eng_data.shutdown_cb = callbacks->shutdown_cb;
     // initial states taken care of by the memset above
     // loc_eng_data.engine_status -- GPS_STATUS_NONE;
     // loc_eng_data.fix_session_status -- GPS_STATUS_NONE;
@@ -2838,4 +2838,28 @@ int loc_eng_read_config(void)
 
     EXIT_LOG(%d, 0);
     return 0;
+}
+
+/*===========================================================================
+FUNCTION    loc_eng_handle_shutdown
+
+DESCRIPTION
+   Calls the shutdown callback function in the loc interface to close
+   the modem node
+
+DEPENDENCIES
+   None
+
+RETURN VALUE
+   0: success
+
+SIDE EFFECTS
+   N/A
+
+===========================================================================*/
+void loc_eng_handle_shutdown(loc_eng_data_s_type &locEng)
+{
+    ENTRY_LOG();
+    locEng.shutdown_cb();
+    EXIT_LOG(%d, 0);
 }
