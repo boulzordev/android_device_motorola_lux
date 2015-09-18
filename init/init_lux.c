@@ -58,8 +58,6 @@ void init_msm_properties(unsigned long msm_id, unsigned long msm_ver, char *boar
     property_get("ro.boot.radio", radio);
     property_get("ro.boot.hardware.sku", sku);
 
-    property_set("ro.product.model", "Moto X Play");
-    property_set("ro.telephony.default_network", "9");
     if (ISMATCH(sku, "XT1562") || ISMATCH(radio, "0x4")) {
         setMsim();
         property_set("ro.product.name", "lux_retasia_ds");
