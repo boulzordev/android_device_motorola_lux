@@ -55,8 +55,9 @@ BOARD_RAMDISK_OFFSET := 0x01000000
 TARGET_KERNEL_SOURCE := kernel/motorola/msm8916
 TARGET_KERNEL_CONFIG := msm8916-lux_defconfig
 
-# Use external Linaro 4.9.3 compiler instead of default GCC 4.8
-# The default GCC throws false positive warnings on my Prima drivers, preventing compilation
+# Many GCC compilers generate false positive warnings on the prima drivers used by this kernel
+# This Linaro 4.9.3 toolchain doesn't, so let's use it
+KERNEL_TOOLCHAIN := $(ANDROID_BUILD_TOP)/prebuilts/gcc/$(HOST_OS)-x86/arm/arm-linux-gnueabihf-4.9/bin
 KERNEL_TOOLCHAIN_PREFIX := arm-linux-gnueabihf-
 
 BOARD_MKBOOTIMG_ARGS := --ramdisk_offset 0x01000000 --tags_offset 0x00000100
@@ -68,9 +69,12 @@ BOARD_ANT_WIRELESS_DEVICE := "vfs-prerelease"
 TARGET_OTA_ASSERT_DEVICE := lux,xt1563,xt1562
 
 # Audio
+AUDIO_FEATURE_ENABLED_NEW_SAMPLE_RATE := true
 AUDIO_FEATURE_ENABLED_KPI_OPTIMIZE := true
 AUDIO_FEATURE_LOW_LATENCY_PRIMARY := true
 BOARD_USES_ALSA_AUDIO := true
+AUDIO_FEATURE_ENABLED_MULTI_VOICE_SESSIONS := true
+TARGET_USES_QCOM_MM_AUDIO := true
 
 # Bluetooth
 BOARD_BLUETOOTH_BDROID_BUILDCFG_INCLUDE_DIR := device/motorola/lux/bluetooth
