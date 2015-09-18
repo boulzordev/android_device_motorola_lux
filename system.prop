@@ -150,6 +150,7 @@ persist.radio.mcfg_enabled=1
 persist.radio.multi_mbns=nz2deg.mbn;apac_default.mbn
 ro.persist.qcapb=0
 ro.pip.gated=0
+ro.telephony.default_network=9
 
 # Time
 persist.timed.enable=true
