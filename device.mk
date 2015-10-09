@@ -77,8 +77,7 @@ PRODUCT_COPY_FILES +=  \
     $(LOCAL_PATH)/audio/audio_effects.conf:system/vendor/etc/audio_effects.conf \
     $(LOCAL_PATH)/audio/audio_platform_info.xml:system/etc/audio_platform_info.xml \
     $(LOCAL_PATH)/audio/audio_policy.conf:system/etc/audio_policy.conf \
-    $(LOCAL_PATH)/audio/mixer_paths.xml:system/etc/mixer_paths.xml \
-    $(LOCAL_PATH)/audio/mixer_paths_florida.xml:system/etc/mixer_paths_florida.xml
+    $(LOCAL_PATH)/audio/mixer_paths.xml:system/etc/mixer_paths.xml
 
 # Camera
 PRODUCT_PACKAGES += \
@@ -122,12 +121,7 @@ PRODUCT_PACKAGES += \
 
 # GPS
 PRODUCT_PACKAGES += \
-    gps.default \
-    gps.msm8916 \
-    libloc_adapter \
-    libgps.utils \
-    libloc_eng \
-    libloc_api_v02
+    gps.msm8916
 
 # IRSC
 PRODUCT_COPY_FILES += \
@@ -198,36 +192,17 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += \
     init.qcom.bt.sh \
     init.qcom.ril.sh \
-    stml0xx_wrapper.sh \
-    hsic.control.bt.sh \
-    init.ath3k.bt.sh \
-    init.crda.sh \
-    init.qcom.audio.sh \
-    init.qcom.coex.sh \
-    init.qcom.fm.sh \
-    init.qcom.modem_links.sh \
-    init.qcom.post_boot.sh \
-    init.qcom.sdio.sh \
-    init.qcom.wifi.sh
+    stml0xx_wrapper.sh
 
 PRODUCT_PACKAGES += \
     fstab.qcom \
-    init.mmi.block_perm.sh \
     init.mmi.boot.sh \
     init.mmi.dtv.sh \
     init.mmi.early_boot.sh \
-    init.mmi.overlay.rc \
     init.mmi.touch.sh \
-    init.mmi.rc \
     init.mmi.usb.rc \
     init.mmi.usb.sh \
-    init.qcom.bms.sh \
     init.qcom.rc \
-    init.qcom.sh \
-    init.target.rc \
-    init.qcom.class_core.sh \
-    init.class_main.sh \
-    init.qcom.early_boot.sh \
     ueventd.qcom.rc
 
 # Thermal
