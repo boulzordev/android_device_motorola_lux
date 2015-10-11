@@ -18,13 +18,12 @@ Create a file .repo/local_manifests/lux.xml and paste this in:
 ```
 <?xml version="1.0" encoding="UTF-8"?>
 <manifest>
-    <project name="boulzordev/android_kernel_motorola_msm8916" path="kernel/motorola/msm8916" remote="github" revision="cm-12.1" />
+    <project name="sultanqasim/android_kernel_motorola_msm8916" path="kernel/motorola/msm8916" remote="github" revision="cm-12.1" />
     <project name="boulzordev/android_vendor_motorola_lux" path="vendor/motorola/lux" remote="github" revision="cm-12.1" />
     <project name="boulzordev/android_device_motorola_lux" path="device/motorola/lux" remote="github" revision="cm-12.1" />
     <project name="CyanogenMod/android_external_mm-dash" path="external/mm-dash" remote="github" />
     <project name="CyanogenMod/android_hardware_qcom_fm" path="hardware/qcom/fm" remote="github" />
     <project name="CyanogenMod/android_device_qcom_common" path="device/qcom/common" remote="github" />
-    <project name="sultanqasim/gcc-linaro-4.9_arm-linux-gnueabihf" path="prebuilts/gcc/linux-x86/arm/arm-linux-gnueabihf-4.9" remote="github" revision="master" />
 </manifest>
 ```
 
