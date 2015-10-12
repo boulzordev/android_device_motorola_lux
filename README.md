@@ -18,7 +18,7 @@ Create a file .repo/local_manifests/lux.xml and paste this in:
 ```
 <?xml version="1.0" encoding="UTF-8"?>
 <manifest>
-    <project name="sultanqasim/android_kernel_motorola_msm8916" path="kernel/motorola/msm8916" remote="github" revision="cm-12.1" />
+    <project name="sultanqasim/android_kernel_motorola_msm8916" path="kernel/motorola/msm8916" remote="github" revision="osprey-to-lux" />
     <project name="boulzordev/android_vendor_motorola_lux" path="vendor/motorola/lux" remote="github" revision="cm-12.1" />
     <project name="boulzordev/android_device_motorola_lux" path="device/motorola/lux" remote="github" revision="cm-12.1" />
     <project name="CyanogenMod/android_external_mm-dash" path="external/mm-dash" remote="github" />
