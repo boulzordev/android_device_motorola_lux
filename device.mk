@@ -168,6 +168,10 @@ PRODUCT_PACKAGES += \
     Tag \
     com.android.nfc_extras
 
+# Motorola
+PRODUCT_PACKAGES += \
+    libmoto
+
 # Misc
 PRODUCT_PACKAGES += \
     libbson \

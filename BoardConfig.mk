@@ -118,9 +118,6 @@ TARGET_PROVIDES_LIBLIGHT := true
 # Malloc
 MALLOC_IMPL := dlmalloc
 
-# Motorola
-TARGET_USES_MOTOROLA_LOG := true
-
 #NFC
 BOARD_NFC_HAL_SUFFIX := 8916
 
