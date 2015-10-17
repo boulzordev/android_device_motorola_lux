@@ -9,6 +9,10 @@
     "target_path": "external/mm-dash"
   },
   {
+    "repository": "android_external_bson",
+    "target_path": "external/bson"
+  },
+  {
     "repository": "android_hardware_qcom_fm",
     "target_path": "hardware/qcom/fm"
   },
