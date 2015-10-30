@@ -289,9 +289,6 @@
     <!-- Wifi driver supports batched scan -->
     <bool translatable="false" name="config_wifi_batched_scan_supported">true</bool>
 
-    <!-- We dont have different firmware for wifi modes, prevent reloading it -->
-    <bool name="config_wifiApFirmwareReload">false</bool>
-
     <!-- Make things go fast -->
     <bool name="config_ui_enableFadingMarquee">false</bool>
 
