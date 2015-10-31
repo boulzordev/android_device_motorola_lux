@@ -209,6 +209,10 @@ PRODUCT_PACKAGES += \
     init.qcom.rc \
     ueventd.qcom.rc
 
+# Stlport
+PRODUCT_PACKAGES += \
+    libstlport
+
 # Thermal
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/configs/thermal-engine-lux.conf:system/etc/thermal-engine-lux.conf
