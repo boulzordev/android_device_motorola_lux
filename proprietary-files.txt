@@ -111,7 +111,6 @@ lib/libAlAisTune.so
 lib/libAlAisWrap.so
 lib/libcamerabgproc-jni.so
 lib/libcamerabgprocservice.so
-lib/libcnefeatureconfig.so
 lib/libdrmdecrypt.so
 lib/libjscore.so
 lib/libjustshoot.so

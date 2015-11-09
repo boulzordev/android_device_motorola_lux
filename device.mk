@@ -164,6 +164,7 @@ PRODUCT_PACKAGES += \
 
 # Misc
 PRODUCT_PACKAGES += \
+    libcnefeatureconfig \
     libboringssl-compat \
     libbson \
     libxml2
