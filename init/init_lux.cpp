@@ -37,6 +37,8 @@
 
 #include "init_msm.h"
 
+static void setMsim(void);
+
 void init_msm_properties(unsigned long msm_id, unsigned long msm_ver, char *board_type)
 {
     char platform[PROP_VALUE_MAX];
@@ -60,7 +62,8 @@ void init_msm_properties(unsigned long msm_id, unsigned long msm_ver, char *boar
     property_get("ro.boot.hardware.sku", sku);
     property_get("ro.boot.carrier", carrier);
 
-    if (ISMATCH(carrier, "retgb") || ISMATCH(carrier, "reteu")) {
+    if (ISMATCH(carrier, "retgb") || ISMATCH(carrier, "reteu") || ISMATCH(carrier, "retde")
+            || ISMATCH(carrier, "vfau")) {
         // These are single SIM XT1562 devices
         property_set("ro.product.model", "XT1562");
         property_set("ro.product.name", "lux_reteu");
@@ -69,7 +72,7 @@ void init_msm_properties(unsigned long msm_id, unsigned long msm_ver, char *boar
         property_set("ro.build.fingerprint", "motorola/lux_reteu/lux:5.1.1/LPD23.118-10/15:user/release-keys");
         property_set("ro.build.product", "lux");
         property_set("ro.mot.build.customerid", "reteu");
-        property_set("ro.gsm.data_retry_config", "");
+        property_set("ro.gsm.data_retry_config", "default_randomization=2000,max_retries=infinite,1000,1000,80000,125000,485000,905000");
         property_set("persist.radio.mot_ecc_custid", "emea");
         property_set("persist.radio.mot_ecc_enabled", "1");
         property_set("persist.radio.process_sups_ind", "0");
@@ -89,7 +92,8 @@ void init_msm_properties(unsigned long msm_id, unsigned long msm_ver, char *boar
         property_set("persist.radio.process_sups_ind", "0");
         property_set("persist.radio.plmn_name_cmp", "1");
     }
-    else if (ISMATCH(carrier, "retbr") || ISMATCH(carrier, "tefbr")) {
+    else if (ISMATCH(carrier, "retbr") || ISMATCH(carrier, "retla") || ISMATCH(carrier, "tefbr")
+            || ISMATCH(carrier, "timbr")) {
         // These are dual SIM XT1563 devices
         setMsim();
         property_set("ro.product.model", "XT1563");
@@ -121,7 +125,7 @@ void init_msm_properties(unsigned long msm_id, unsigned long msm_ver, char *boar
     INFO("Found radio id: %s data %s setting build properties for %s device\n", radio, sku, devicename);
 }
 
-void setMsim()
+static void setMsim(void)
 {
     property_set("persist.radio.force_get_pref", "1");
     property_set("persist.radio.multisim.config", "dsds");
