@@ -58,7 +58,7 @@ public:
                                        LocPosTechMask loc_technology_mask) {
         return false;
     }
-    inline virtual bool reportSv(GpsSvStatus &svStatus,
+    inline virtual bool reportSv(GnssSvStatus &svStatus,
                                  GpsLocationExtended &locationExtended,
                                  void* svExt) {
         return false;
@@ -72,10 +72,8 @@ public:
                                               bool active) {
         return false;
     }
-    inline virtual bool reportPositions(GpsExtLocation * locations,
-                                        int32_t number_of_locations,
-                                        enum loc_sess_status status,
-                                        LocPosTechMask techMask) {
+    inline virtual bool reportPositions(const GpsExtLocation* locations,
+                                        int32_t number_of_locations) {
         return false;
     }
 };
