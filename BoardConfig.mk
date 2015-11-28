@@ -110,6 +110,7 @@ TARGET_PROVIDES_GPS_LOC_API := true
 TARGET_UNIFIED_DEVICE := true
 TARGET_INIT_VENDOR_LIB := libinit_msm
 TARGET_LIBINIT_DEFINES_FILE := $(LOCAL_PATH)/init/init_lux.cpp
+TARGET_PROVIDES_ROOTDIR := true
 
 # Lights
 TARGET_PROVIDES_LIBLIGHT := true
@@ -131,10 +132,6 @@ BOARD_USERDATAIMAGE_PARTITION_SIZE := 11815223296 # 11538304 * 1024 mmcblk0p42
 # Qualcomm support
 BOARD_USES_QCOM_HARDWARE := true
 TARGET_USES_QCOM_BSP := true
-
-# Quickboot
-PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/prebuilt/QuickBoot.apk:system/priv-app/QuickBoot/QuickBoot.apk
 
 # Recovery
 BOARD_HAS_NO_SELECT_BUTTON := true
