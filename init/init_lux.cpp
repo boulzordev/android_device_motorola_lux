@@ -129,4 +129,5 @@ static void setMsim(void)
 {
     property_set("persist.radio.force_get_pref", "1");
     property_set("persist.radio.multisim.config", "dsds");
+    property_set("ro.telephony.ril.config", "simactivation");
 }
