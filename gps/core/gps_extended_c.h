@@ -1,4 +1,4 @@
-/* Copyright (c) 2013-2015, The Linux Foundation. All rights reserved.
+/* Copyright (c) 2013-2014, The Linux Foundation. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -35,7 +35,6 @@ extern "C" {
 
 #include <ctype.h>
 #include <stdbool.h>
-#include <stdlib.h>
 #include <string.h>
 #include <hardware/gps.h>
 
@@ -64,10 +63,7 @@ extern "C" {
 #define ULP_LOCATION_IS_FROM_GEOFENCE 0X0008
 /** Positioin is from Hardware FLP */
 #define ULP_LOCATION_IS_FROM_HW_FLP   0x0010
-/** Position is from NLP */
-#define ULP_LOCATION_IS_FROM_NLP      0x0020
-/** Position is from PIP */
-#define ULP_LOCATION_IS_FROM_PIP      0x0040
+#define ULP_LOCATION_IS_FROM_NLP   0x0020
 
 #define ULP_MIN_INTERVAL_INVALID 0xffffffff
 
@@ -76,30 +72,6 @@ extern "C" {
 
 #define AGPS_CERTIFICATE_MAX_LENGTH 2000
 #define AGPS_CERTIFICATE_MAX_SLOTS 10
-
-/** Batching default ID for dummy batching session*/
-#define GPS_BATCHING_DEFAULT_ID                 1
-
-/** This cap is used to decide the FLP session cache
-size on AP. If the BATCH_SIZE in flp.conf is less than
-GPS_AP_BATCHING_SIZE_CAP, FLP session cache size will
-be twice the BATCH_SIZE defined in flp.conf. Otherwise,
-FLP session cache size will be equal to the BATCH_SIZE.*/
-#define GPS_AP_BATCHING_SIZE_CAP               40
-
-#define GPS_BATCHING_OPERATION_SUCCEESS         1
-#define GPS_BATCHING_OPERATION_FAILURE          0
-
-/** GPS extended batching flags*/
-#define GPS_EXT_BATCHING_ON_FULL        0x0000001
-#define GPS_EXT_BATCHING_ON_FIX         0x0000002
-
-/** Reasons of GPS reports batched locations*/
-typedef enum loc_batching_reported_type {
-    LOC_BATCHING_ON_FULL_IND_REPORT,
-    LOC_BATCHING_ON_FIX_IND_REPORT,
-    LOC_BATCHING_ON_QUERY_REPORT
-}LocBatchingReportedType;
 
 enum loc_registration_mask_status {
     LOC_REGISTRATION_MASK_ENABLED,
@@ -180,7 +152,7 @@ typedef struct {
     AGpsExtType type;
     AGpsStatusValue status;
     uint32_t        ipv4_addr;
-    struct sockaddr_storage addr;
+    char            ipv6_addr[16];
     char            ssid[SSID_BUF_SIZE];
     char            password[SSID_BUF_SIZE];
 } AGpsExtStatus;
@@ -259,20 +231,6 @@ typedef uint16_t GpsLocationExtendedFlags;
 #define GPS_LOCATION_EXTENDED_HAS_VERT_UNC 0x0010
 /** GpsLocationExtended has valid speed uncertainty */
 #define GPS_LOCATION_EXTENDED_HAS_SPEED_UNC 0x0020
-/** GpsLocationExtended has valid heading uncertainty */
-#define GPS_LOCATION_EXTENDED_HAS_BEARING_UNC 0x0040
-/** GpsLocationExtended has valid horizontal reliability */
-#define GPS_LOCATION_EXTENDED_HAS_HOR_RELIABILITY 0x0080
-/** GpsLocationExtended has valid vertical reliability */
-#define GPS_LOCATION_EXTENDED_HAS_VERT_RELIABILITY 0x0100
-
-typedef enum {
-    LOC_RELIABILITY_NOT_SET = 0,
-    LOC_RELIABILITY_VERY_LOW = 1,
-    LOC_RELIABILITY_LOW = 2,
-    LOC_RELIABILITY_MEDIUM = 3,
-    LOC_RELIABILITY_HIGH = 4
-}LocReliability;
 
 /** Represents gps location extended. */
 typedef struct {
@@ -294,12 +252,6 @@ typedef struct {
     float           vert_unc;
     /** speed uncertainty in m/s */
     float           speed_unc;
-    /** heading uncertainty in degrees (0 to 359.999) */
-    float           bearing_unc;
-    /** horizontal reliability. */
-    LocReliability  horizontal_reliability;
-    /** vertical reliability. */
-    LocReliability  vertical_reliability;
 } GpsLocationExtended;
 
 typedef struct GpsExtLocation_s {
@@ -314,47 +266,6 @@ typedef struct GpsExtLocation_s {
     int64_t         timestamp;
     uint32_t        sources_used;
 } GpsExtLocation;
-
-/** Represents SV status. */
-typedef struct {
-    /** set to sizeof(GnssSvStatus) */
-    size_t          size;
-
-    /** Number of SVs currently visible. */
-    int         num_svs;
-
-    /** Contains an array of SV information. */
-    GpsSvInfo   sv_list[GPS_MAX_SVS];
-
-    /** Represents a bit mask indicating which SVs
-     * have ephemeris data.
-     */
-    uint32_t    ephemeris_mask;
-
-    /** Represents a bit mask indicating which SVs
-     * have almanac data.
-     */
-    uint32_t    almanac_mask;
-
-    /**
-     * Represents a bit mask indicating which GPS SVs
-     * were used for computing the most recent position fix.
-     */
-    uint32_t    gps_used_in_fix_mask;
-
-    /**
-     * Represents a bit mask indicating which GLONASS SVs
-     * were used for computing the most recent position fix.
-     */
-    uint32_t    glo_used_in_fix_mask;
-
-    /**
-     * Represents a bit mask indicating which BDS SVs
-     * were used for computing the most recent position fix.
-     */
-    uint64_t    bds_used_in_fix_mask;
-
-} GnssSvStatus;
 
 enum loc_sess_status {
     LOC_SESS_SUCCESS,
@@ -435,10 +346,7 @@ enum loc_api_adapter_event_index {
     LOC_API_ADAPTER_BATCH_FULL,                        // Batching on full
     LOC_API_ADAPTER_BATCHED_POSITION_REPORT,           // Batching on fix
     LOC_API_ADAPTER_BATCHED_GENFENCE_BREACH_REPORT,    //
-    LOC_API_ADAPTER_GDT_UPLOAD_BEGIN_REQ,              // GDT upload start request
-    LOC_API_ADAPTER_GDT_UPLOAD_END_REQ,                // GDT upload end request
-    LOC_API_ADAPTER_GNSS_MEASUREMENT,                  // GNSS Measurement report
-    LOC_API_ADAPTER_REQUEST_TIMEZONE,                  // Timezone injection request
+
     LOC_API_ADAPTER_EVENT_MAX
 };
 
@@ -464,10 +372,6 @@ enum loc_api_adapter_event_index {
 #define LOC_API_ADAPTER_BIT_REQUEST_WIFI_AP_DATA             (1<<LOC_API_ADAPTER_REQUEST_WIFI_AP_DATA)
 #define LOC_API_ADAPTER_BIT_BATCH_FULL                       (1<<LOC_API_ADAPTER_BATCH_FULL)
 #define LOC_API_ADAPTER_BIT_BATCHED_POSITION_REPORT          (1<<LOC_API_ADAPTER_BATCHED_POSITION_REPORT)
-#define LOC_API_ADAPTER_BIT_GDT_UPLOAD_BEGIN_REQ             (1<<LOC_API_ADAPTER_GDT_UPLOAD_BEGIN_REQ)
-#define LOC_API_ADAPTER_BIT_GDT_UPLOAD_END_REQ               (1<<LOC_API_ADAPTER_GDT_UPLOAD_END_REQ)
-#define LOC_API_ADAPTER_BIT_GNSS_MEASUREMENT                 (1<<LOC_API_ADAPTER_GNSS_MEASUREMENT)
-#define LOC_API_ADAPTER_BIT_REQUEST_TIMEZONE                 (1<<LOC_API_ADAPTER_REQUEST_TIMEZONE)
 
 typedef unsigned int LOC_API_ADAPTER_EVENT_MASK_T;
 
@@ -477,8 +381,6 @@ typedef enum loc_api_adapter_msg_to_check_supported {
 
     LOC_API_ADAPTER_MESSAGE_MAX
 } LocCheckingMessagesID;
-
-typedef int IzatDevId_t;
 
 typedef uint32_t LOC_GPS_LOCK_MASK;
 #define isGpsLockNone(lock) ((lock) == 0)
@@ -491,3 +393,4 @@ typedef uint32_t LOC_GPS_LOCK_MASK;
 #endif /* __cplusplus */
 
 #endif /* GPS_EXTENDED_C_H */
+
