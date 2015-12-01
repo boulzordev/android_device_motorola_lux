@@ -1,20 +1,3 @@
-/*
- * Copyright (C) 2015 The Android Open Source Project
- * Written by Dmitry Grinberg, adapted by LuK1337
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
@@ -45,6 +28,7 @@
 
     //android::SensorManager::createEventQueue(android::String8, int)
     extern void _ZN7android13SensorManager16createEventQueueENS_7String8Ei(void **retVal, void *sensorMgr, void **str8P, int mode);
+
 
 //data exports we must provide for camera library to be happy
 
@@ -98,8 +82,6 @@ void _ZN7android13SensorManagerC1Ev(void *sensorMgr)
 {
     void *string;
 
-    ALOGI("msm8226 camera interposition library: your camera should work in M now.");
-
     _ZN7android8String16C1EPKc(&string, "camera.msm8226");
     _ZN7android13SensorManagerC1ERKNS_8String16E(sensorMgr, &string);
     _ZN7android8String16D1Ev(&string);
@@ -121,7 +103,3 @@ void _ZN7android13SensorManager16createEventQueueEv(void **retVal, void *sensorM
     _ZN7android13SensorManager16createEventQueueENS_7String8Ei(retVal, sensorMgr, &string, 0);
     _ZN7android7String8D1Ev(&string);
 }
-
-void _ZN7android8AMessageC1Eji() {}
-void _ZN7android10MediaCodec12CreateByTypeERKNS_2spINS_7ALooperEEEPKcbPi() {}
-void _ZN7android11AudioSourceC1E14audio_source_tjj() {}
