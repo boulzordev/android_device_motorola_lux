@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 The CyanogenMod Project
+ * Copyright (C) 2015-2016 The CyanogenMod Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,23 +29,18 @@
 #include <hardware/hardware.h>
 #include <hardware/power.h>
 
-#define HOTPLUG "/sys/module/cluster_plug/parameters/cluster_plug_active"
-
+#define LOW_POWER "/sys/module/cluster_plug/parameters/low_power_mode"
 #define BIG_PATH "/sys/devices/system/cpu/cpu0/cpufreq/interactive/"
-
 #define BOOST_FREQ "/sys/module/cpu_boost/parameters/input_boost_freq"
 
 #define BIG_TARGET_LOADS_FAST "40 800000:50 1113600:60 1344000:70"
 #define BIG_TARGET_LOADS_BLNC "60 800000:70 1113600:80 1344000:85"
-#define BIG_TARGET_LOADS_SLOW "70 800000:80 1113600:90 1344000:95"
 
 #define BIG_HISPEED_LOAD_FAST "60"
 #define BIG_HISPEED_LOAD_BLNC "75"
-#define BIG_HISPEED_LOAD_SLOW "85"
 
 #define BIG_HISPEED_FREQ_FAST "1497600"
 #define BIG_HISPEED_FREQ_BLNC "1113600"
-#define BIG_HISPEED_FREQ_SLOW "960000"
 
 #define BOOST_FREQ_FAST "1344000"
 #define BOOST_FREQ_BLNC "960000"
@@ -54,7 +49,8 @@
 enum {
     PROFILE_POWER_SAVE = 0,
     PROFILE_BALANCED,
-    PROFILE_HIGH_PERFORMANCE
+    PROFILE_HIGH_PERFORMANCE,
+    PROFILE_MAX
 };
 
 static int current_power_profile = -1;
@@ -97,19 +93,6 @@ static void power_init(__attribute__((unused)) struct power_module *module)
     ALOGI("%s", __func__);
 }
 
-static void hotplug_set(bool enable)
-{
-    if (enable) {
-        sysfs_write(HOTPLUG, "1");
-    } else {
-        sysfs_write(HOTPLUG, "0");
-        sysfs_write2("/sys/devices/system/cpu/cpu4/online", "0", false);
-        sysfs_write2("/sys/devices/system/cpu/cpu5/online", "0", false);
-        sysfs_write2("/sys/devices/system/cpu/cpu6/online", "0", false);
-        sysfs_write2("/sys/devices/system/cpu/cpu7/online", "0", false);
-    }
-}
-
 static bool check_governor(void)
 {
     struct stat s;
@@ -121,27 +104,13 @@ static bool check_governor(void)
 
 static void power_set_interactive(__attribute__((unused)) struct power_module *module, int on)
 {
-    bool gov_interactive;
-
     if (current_power_profile != PROFILE_BALANCED)
         return;
 
-    gov_interactive = check_governor();
-
     if (on) {
-        if (gov_interactive) {
-            sysfs_write(BIG_PATH "hispeed_freq", BIG_HISPEED_FREQ_BLNC);
-            sysfs_write(BIG_PATH "go_hispeed_load", BIG_HISPEED_LOAD_BLNC);
-            sysfs_write(BIG_PATH "target_loads", BIG_TARGET_LOADS_BLNC);
-        }
-        hotplug_set(true);
+        sysfs_write(LOW_POWER, "0");
     } else {
-        if (gov_interactive) {
-            sysfs_write(BIG_PATH "hispeed_freq", BIG_HISPEED_FREQ_SLOW);
-            sysfs_write(BIG_PATH "go_hispeed_load", BIG_HISPEED_LOAD_SLOW);
-            sysfs_write(BIG_PATH "target_loads", BIG_TARGET_LOADS_SLOW);
-        }
-        hotplug_set(false);
+        sysfs_write(LOW_POWER, "1");
     }
 }
 
@@ -159,11 +128,10 @@ static void set_power_profile(int profile)
         if (gov_interactive) {
             sysfs_write(BIG_PATH "go_hispeed_load", BIG_HISPEED_LOAD_BLNC);
             sysfs_write(BIG_PATH "hispeed_freq", BIG_HISPEED_FREQ_BLNC);
-            sysfs_write(BIG_PATH "io_is_busy", "1");
             sysfs_write(BIG_PATH "target_loads", BIG_TARGET_LOADS_BLNC);
         }
 
-        hotplug_set(true);
+        sysfs_write(LOW_POWER, "0");
         sysfs_write(BOOST_FREQ, BOOST_FREQ_BLNC);
         ALOGD("%s: set balanced mode", __func__);
         break;
@@ -171,23 +139,15 @@ static void set_power_profile(int profile)
         if (gov_interactive) {
             sysfs_write(BIG_PATH "go_hispeed_load", BIG_HISPEED_LOAD_FAST);
             sysfs_write(BIG_PATH "hispeed_freq", BIG_HISPEED_FREQ_FAST);
-            sysfs_write(BIG_PATH "io_is_busy", "1");
             sysfs_write(BIG_PATH "target_loads", BIG_TARGET_LOADS_FAST);
         }
 
-        hotplug_set(true);
+        sysfs_write(LOW_POWER, "0");
         sysfs_write(BOOST_FREQ, BOOST_FREQ_FAST);
         ALOGD("%s: set performance mode", __func__);
         break;
     case PROFILE_POWER_SAVE:
-        if (gov_interactive) {
-            sysfs_write(BIG_PATH "go_hispeed_load", BIG_HISPEED_LOAD_SLOW);
-            sysfs_write(BIG_PATH "hispeed_freq", BIG_HISPEED_FREQ_SLOW);
-            sysfs_write(BIG_PATH "io_is_busy", "0");
-            sysfs_write(BIG_PATH "target_loads", BIG_TARGET_LOADS_SLOW);
-        }
-
-        hotplug_set(false);
+        sysfs_write(LOW_POWER, "1");
         sysfs_write(BOOST_FREQ, BOOST_FREQ_SLOW);
         ALOGD("%s: set powersave mode", __func__);
         break;
@@ -200,22 +160,16 @@ static void set_power_profile(int profile)
 
 static void power_hint( __attribute__((unused)) struct power_module *module,
                         __attribute__((unused)) power_hint_t hint,
-                        __attribute__((unused)) void *data)
+                        void *data)
 {
-    char buf[80];
-    int len;
-
     switch (hint) {
     case POWER_HINT_INTERACTION:
         break;
     case POWER_HINT_SET_PROFILE:
-        set_power_profile((int)data);
+        set_power_profile(*(int32_t *)data);
         break;
     case POWER_HINT_LOW_POWER:
-        if ((int)data == 1)
-            set_power_profile(PROFILE_POWER_SAVE);
-        else
-            set_power_profile(PROFILE_BALANCED);
+        /* This hint is handled by the framework */
         break;
     default:
         break;
@@ -225,6 +179,16 @@ static void power_hint( __attribute__((unused)) struct power_module *module,
 static struct hw_module_methods_t power_module_methods = {
     .open = NULL,
 };
+
+
+static int get_feature(__attribute__((unused)) struct power_module *module,
+                       feature_t feature)
+{
+    if (feature == POWER_FEATURE_SUPPORTED_PROFILES) {
+        return PROFILE_MAX;
+    }
+    return -1;
+}
 
 struct power_module HAL_MODULE_INFO_SYM = {
     .common = {
@@ -240,4 +204,5 @@ struct power_module HAL_MODULE_INFO_SYM = {
     .init = power_init,
     .setInteractive = power_set_interactive,
     .powerHint = power_hint,
+    .getFeature = get_feature
 };
